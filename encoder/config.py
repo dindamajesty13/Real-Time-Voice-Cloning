@@ -36,10 +36,40 @@ voxceleb_datasets = {
         "test": ["VoxCeleb2/test_wav"]
     }
 }
+my_datasets = {
+    "train": {
+        "clean": ["MyDataset"],
+        "other": ["MyDataset"]
+    },
+    "test": {
+        "clean": ["MyDataset"],
+        "other": ["MyDataset"]
+    },
+    "dev": {
+        "clean": ["MyDataset"],
+        "other": ["MyDataset"]
+    },
+}
+
+ww_datasets = {
+    "train": {
+        "clean": ["wwDataset"],
+        "other": ["wwDataset"]
+    },
+    "test": {
+        "clean": ["wwDataset"],
+        "other": ["wwDataset"]
+    },
+    "dev": {
+        "clean": ["wwDataset"],
+        "other": ["wwDataset"]
+    },
+}
 
 other_datasets = [
     "LJSpeech-1.1",
     "VCTK-Corpus/wav48",
 ]
+
 
 anglophone_nationalites = ["australia", "canada", "ireland", "uk", "usa"]

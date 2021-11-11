@@ -29,9 +29,9 @@ if __name__ == "__main__":
     parser.add_argument("--no_alignments", action="store_true", help=\
         "Use this option when dataset does not include alignments\
         (these are used to split long audio files into sub-utterances.)")
-    parser.add_argument("--datasets_name", type=str, default="LibriSpeech", help=\
+    parser.add_argument("--datasets_name", type=str, default="wwDataset", help=\
         "Name of the dataset directory to process.")
-    parser.add_argument("--subfolders", type=str, default="train-clean-100, train-clean-360", help=\
+    parser.add_argument("--subfolders", type=str, default="1, 2", help=\
         "Comma-separated list of subfolders to process inside your dataset directory")
     args = parser.parse_args()
 

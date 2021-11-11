@@ -1,6 +1,6 @@
 from multiprocess.pool import ThreadPool
 from encoder.params_data import *
-from encoder.config import librispeech_datasets, anglophone_nationalites
+from encoder.config import librispeech_datasets, anglophone_nationalites, my_datasets, ww_datasets
 from datetime import datetime
 from encoder import audio
 from pathlib import Path
@@ -118,58 +118,26 @@ def _preprocess_speaker_dirs(speaker_dirs, dataset_name, datasets_root, out_dir,
     print("Done preprocessing %s.\n" % dataset_name)
 
 
-def preprocess_librispeech(datasets_root: Path, out_dir: Path, skip_existing=False):
-    for dataset_name in librispeech_datasets["train"]["other"]:
+def preprocess_my_dataset(datasets_root: Path, out_dir: Path, skip_existing=False):
+    for dataset_name in my_datasets["train"]["other"]:
         # Initialize the preprocessing
         dataset_root, logger = _init_preprocess_dataset(dataset_name, datasets_root, out_dir)
         if not dataset_root:
-            return 
-        
-        # Preprocess all speakers
+            return
+
+            # Preprocess all speakers
         speaker_dirs = list(dataset_root.glob("*"))
-        _preprocess_speaker_dirs(speaker_dirs, dataset_name, datasets_root, out_dir, "flac",
+        _preprocess_speaker_dirs(speaker_dirs, dataset_name, datasets_root, out_dir, "m4a",
                                  skip_existing, logger)
 
+def preprocess_ww_dataset(datasets_root: Path, out_dir: Path, skip_existing=False):
+    for dataset_name in ww_datasets["train"]["other"]:
+        # Initialize the preprocessing
+        dataset_root, logger = _init_preprocess_dataset(dataset_name, datasets_root, out_dir)
+        if not dataset_root:
+            return
 
-def preprocess_voxceleb1(datasets_root: Path, out_dir: Path, skip_existing=False):
-    # Initialize the preprocessing
-    dataset_name = "VoxCeleb1"
-    dataset_root, logger = _init_preprocess_dataset(dataset_name, datasets_root, out_dir)
-    if not dataset_root:
-        return
-
-    # Get the contents of the meta file
-    with dataset_root.joinpath("vox1_meta.csv").open("r") as metafile:
-        metadata = [line.split("\t") for line in metafile][1:]
-    
-    # Select the ID and the nationality, filter out non-anglophone speakers
-    nationalities = {line[0]: line[3] for line in metadata}
-    keep_speaker_ids = [speaker_id for speaker_id, nationality in nationalities.items() if 
-                        nationality.lower() in anglophone_nationalites]
-    print("VoxCeleb1: using samples from %d (presumed anglophone) speakers out of %d." % 
-          (len(keep_speaker_ids), len(nationalities)))
-    
-    # Get the speaker directories for anglophone speakers only
-    speaker_dirs = dataset_root.joinpath("wav").glob("*")
-    speaker_dirs = [speaker_dir for speaker_dir in speaker_dirs if
-                    speaker_dir.name in keep_speaker_ids]
-    print("VoxCeleb1: found %d anglophone speakers on the disk, %d missing (this is normal)." % 
-          (len(speaker_dirs), len(keep_speaker_ids) - len(speaker_dirs)))
-
-    # Preprocess all speakers
-    _preprocess_speaker_dirs(speaker_dirs, dataset_name, datasets_root, out_dir, "wav",
-                             skip_existing, logger)
-
-
-def preprocess_voxceleb2(datasets_root: Path, out_dir: Path, skip_existing=False):
-    # Initialize the preprocessing
-    dataset_name = "VoxCeleb2"
-    dataset_root, logger = _init_preprocess_dataset(dataset_name, datasets_root, out_dir)
-    if not dataset_root:
-        return
-    
-    # Get the speaker directories
-    # Preprocess all speakers
-    speaker_dirs = list(dataset_root.joinpath("dev", "aac").glob("*"))
-    _preprocess_speaker_dirs(speaker_dirs, dataset_name, datasets_root, out_dir, "m4a",
-                             skip_existing, logger)
+            # Preprocess all speakers
+        speaker_dirs = list(dataset_root.glob("*"))
+        _preprocess_speaker_dirs(speaker_dirs, dataset_name, datasets_root, out_dir, "wav",
+                                 skip_existing, logger)
